@@ -30,6 +30,7 @@ class UploadStoriesActivity : AppCompatActivity() {
     private lateinit var currentPhotoPath: String
     private var getFile: File? = null
     private val viewModel: UploadStoriesViewModel by viewModels()
+    private var isFieldValid = false
 
     private val launchIntentCamera = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -90,7 +91,11 @@ class UploadStoriesActivity : AppCompatActivity() {
 
         binding.btnCamera.setOnClickListener { startCamera() }
         binding.btnGallery.setOnClickListener { startGallery() }
-        binding.btnUpload.setOnClickListener { uploadStory() }
+        binding.btnUpload.setOnClickListener {
+            if (checkField()) {
+                uploadStory()
+            }
+        }
     }
 
     private fun allPermissionGranted() = REQUIRED_PERMISSIONS.all {
@@ -168,6 +173,21 @@ class UploadStoriesActivity : AppCompatActivity() {
         } else {
             binding.progressBar.visibility = View.GONE
         }
+    }
+
+    private fun checkField(): Boolean {
+        isFieldValid = if (binding.etDescription.text.toString().isEmpty()) {
+            Toast.makeText(
+                this@UploadStoriesActivity,
+                "Deskripsi tidak boleh kosong",
+                Toast.LENGTH_SHORT
+            ).show()
+            false
+        } else {
+            true
+        }
+
+        return isFieldValid
     }
 
     companion object {

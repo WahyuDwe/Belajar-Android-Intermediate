@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DicodingStoryApp</string>
+    <string name="password">Kata sandi</string>
+    <string name="password_error">Kata sandi harus lebih dari 8 karakter</string>
+    <string name="name">Nama</string>
+    <string name="login">Masuk</string>
+    <string name="register">Daftar</string>
+    <string name="dicoding_story">Dicoding Story</string>
+    <string name="kamera">Kamera</string>
+    <string name="galeri">galeri</string>
+    <string name="deskripsi">Deskripsi</string>
+    <string name="upload">Unggah</string>
+    <string name="gambar_tidak_boleh_kosong">Gambar tidak boleh kosong</string>
+    <string name="berhasil_upload_story">Stories Berhasil diupload</string>
+    <string name="gagal_upload_story">Stories Gagal diupload</string>
+    <string name="ganti_bahasa">Ganti Bahasa</string>
+    <string name="logout">Keluar</string>
+    <string name="email_tidak_valid">Email tidak valid</string>
+    <string name="gagal_memuat_data">Gagal memuat data</string>
+    <string name="gagal_silahkan_coba_lagi">Gagal memuat data, silahkan coba lagi</string>
+    <string name="detail_stories">Detail Stories</string>
+    <string name="pendaftaran_berhasil">Pendaftaran Berhasil</string>
+    <string name="pendaftaran_gagal">Pendaftaran Gagal, silahkan coba lagi</string>
+    <string name="email">Email</string>
+    <string name="login_berhasil">Login berhasil</string>
+    <string name="login_gagal">Login gagal</string>
+    <string name="nama_kosong">Nama tidak boleh kosong</string>
+    <string name="email_kosong">Email tidak boleh kosong</string>
+</resources>

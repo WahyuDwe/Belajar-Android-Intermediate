@@ -14,6 +14,7 @@ import com.dwi.dicodingstoryapp.R
 import com.dwi.dicodingstoryapp.data.source.remote.StatusResponse
 import com.dwi.dicodingstoryapp.databinding.ActivityMainBinding
 import com.dwi.dicodingstoryapp.ui.login.LoginActivity
+import com.dwi.dicodingstoryapp.ui.maps.MapsActivity
 import com.dwi.dicodingstoryapp.ui.stories.UploadStoriesActivity
 import com.dwi.dicodingstoryapp.utils.Constanta.ACCESS_TOKEN
 import com.dwi.dicodingstoryapp.utils.SharedPrefUtils
@@ -69,6 +70,10 @@ class MainActivity : AppCompatActivity() {
                 SharedPrefUtils.clear()
                 startActivity(Intent(this@MainActivity, LoginActivity::class.java))
                 finish()
+            }
+
+            R.id.maps -> {
+                startActivity(Intent(this@MainActivity, MapsActivity::class.java))
             }
         }
         return super.onOptionsItemSelected(item)

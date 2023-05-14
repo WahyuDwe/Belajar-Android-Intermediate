@@ -27,4 +27,5 @@
     <string name="login_gagal">Login gagal</string>
     <string name="nama_kosong">Nama tidak boleh kosong</string>
     <string name="email_kosong">Email tidak boleh kosong</string>
+    <string name="maps">Maps</string>
 </resources>

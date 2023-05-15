@@ -30,12 +30,14 @@ class RegisterActivity : AppCompatActivity() {
             val name = binding.etName.text.toString()
 
             if (isFieldValid()) {
-                isLoading(true)
                 viewModel.register(
                     name, email, password
                 ).observe(this) {
                     if (it != null) {
                         when (it.status) {
+                            StatusResponse.LOADING -> {
+                                isLoading(true)
+                            }
                             StatusResponse.SUCCESS -> {
                                 isLoading(false)
                                 Toast.makeText(

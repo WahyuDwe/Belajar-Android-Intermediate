@@ -29,10 +29,12 @@ class LoginActivity : AppCompatActivity() {
             val password = binding.etPassword.text.toString()
 
             if (isFieldValid()) {
-                isLoading(true)
                 viewModel.auth(email, password).observe(this) {
                     if (it != null) {
                         when (it.status) {
+                            StatusResponse.LOADING -> {
+                                isLoading(true)
+                            }
                             StatusResponse.SUCCESS -> {
                                 isLoading(false)
                                 Toast.makeText(

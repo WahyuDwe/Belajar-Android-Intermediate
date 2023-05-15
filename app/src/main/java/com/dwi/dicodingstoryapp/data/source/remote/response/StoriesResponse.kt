@@ -14,7 +14,7 @@ data class StoriesResponse(
 	val message: String? = null,
 
 	@field:SerializedName("listStory")
-	val story: ArrayList<StoryResult>? = null
+	val story: List<StoryResult>
 ) : Parcelable
 
 @Parcelize

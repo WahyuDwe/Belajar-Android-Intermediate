@@ -2,6 +2,7 @@ package com.dwi.dicodingstoryapp.ui.maps
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import com.dwi.dicodingstoryapp.R
@@ -46,7 +47,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         viewModel.getAllStoriesLocation().observe(this@MapsActivity) { loc ->
             if (loc != null) {
                 when (loc.status) {
+                    StatusResponse.LOADING -> {
+                        isLoading(true)
+                    }
                     StatusResponse.SUCCESS -> {
+                        isLoading(false)
                         val lStoriesMap = ArrayList<LatLng>()
                         val lStoriesMapName = ArrayList<String>()
                         for (i in loc.body?.story!!.indices) {
@@ -65,10 +70,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     }
 
                     StatusResponse.ERROR -> {
+                        isLoading(false)
                         Toast.makeText(this@MapsActivity, getString(R.string.gagal_memuat_data), Toast.LENGTH_SHORT).show()
                     }
                 }
             }
+        }
+    }
+
+    private fun isLoading(isLoading: Boolean) {
+        if (isLoading) {
+            binding.progressBar.visibility = View.VISIBLE
+        } else {
+            binding.progressBar.visibility = View.GONE
         }
     }
 }

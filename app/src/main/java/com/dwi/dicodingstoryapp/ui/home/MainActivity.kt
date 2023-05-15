@@ -11,8 +11,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dwi.dicodingstoryapp.R
-import com.dwi.dicodingstoryapp.data.source.remote.StatusResponse
 import com.dwi.dicodingstoryapp.databinding.ActivityMainBinding
+import com.dwi.dicodingstoryapp.ui.home.adapter.LoadingStateAdapter
+import com.dwi.dicodingstoryapp.ui.home.adapter.MainAdapter
 import com.dwi.dicodingstoryapp.ui.login.LoginActivity
 import com.dwi.dicodingstoryapp.ui.maps.MapsActivity
 import com.dwi.dicodingstoryapp.ui.stories.UploadStoriesActivity
@@ -35,11 +36,7 @@ class MainActivity : AppCompatActivity() {
         Log.d("MainActivity", "Access Token ${SharedPrefUtils.getString(ACCESS_TOKEN)}")
 
         mainAdapter = MainAdapter()
-        with(binding.rvStories) {
-            layoutManager = LinearLayoutManager(this@MainActivity)
-            setHasFixedSize(false)
-            this.adapter = mainAdapter
-        }
+        binding.rvStories.layoutManager = LinearLayoutManager(this@MainActivity)
 
         getStories()
 
@@ -59,7 +56,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
+        when (item.itemId) {
             R.id.language -> {
                 Intent(Settings.ACTION_LOCALE_SETTINGS).apply {
                     startActivity(this)
@@ -80,21 +77,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getStories() {
-        isLoading(true)
-        mainViewModel.getStories().observe(this) {
-            if (it != null) {
-                when (it.status) {
-                    StatusResponse.SUCCESS -> {
-                        isLoading(false)
-                        mainAdapter.setData(it.body?.story!!)
-                        Log.d("MainActivity", "Success: ${it.body.story}")
-                    }
-                    StatusResponse.ERROR -> {
-                        isLoading(false)
-                        Log.d("MainActivity", "Error: ${it.message}")
-                    }
-                }
+        binding.rvStories.adapter = mainAdapter.withLoadStateFooter(
+            footer = LoadingStateAdapter {
+                mainAdapter.retry()
             }
+        )
+        mainViewModel.getStories().observe(this@MainActivity) { story ->
+            mainAdapter.submitData(lifecycle, story)
         }
     }
 

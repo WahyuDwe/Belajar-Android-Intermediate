@@ -1,6 +1,7 @@
 package com.dwi.dicodingstoryapp.data.source
 
 import androidx.lifecycle.LiveData
+import androidx.paging.PagingData
 import com.dwi.dicodingstoryapp.data.source.remote.ApiResponse
 import com.dwi.dicodingstoryapp.data.source.remote.response.*
 import okhttp3.MultipartBody
@@ -18,7 +19,7 @@ interface StoryDataSource {
         password: String
     ): LiveData<ApiResponse<RegisterResponse>>
 
-    fun getStories(): LiveData<ApiResponse<StoriesResponse>>
+    fun getStories(): LiveData<PagingData<StoryResult>>
 
     fun uploadStories(
         file: MultipartBody.Part,

@@ -4,9 +4,14 @@ package com.dwi.dicodingstoryapp.data.source
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.liveData
 import com.dwi.dicodingstoryapp.data.source.remote.ApiResponse
 import com.dwi.dicodingstoryapp.data.source.remote.response.*
 import com.dwi.dicodingstoryapp.network.ApiConfig
+import com.dwi.dicodingstoryapp.network.ApiService
 import com.dwi.dicodingstoryapp.utils.Constanta.ACCESS_TOKEN
 import com.dwi.dicodingstoryapp.utils.SharedPrefUtils
 import okhttp3.MultipartBody
@@ -24,6 +29,8 @@ class StoryDataRepository : StoryDataSource {
         email: String, password: String
     ): LiveData<ApiResponse<LoginResponse>> {
         val authResult: MutableLiveData<ApiResponse<LoginResponse>> = MutableLiveData()
+
+        authResult.value = ApiResponse.loading()
         try {
             val response = authRequest(email, password)
             Log.d("LoginViewModel", "code: ${response.code()}")
@@ -48,6 +55,7 @@ class StoryDataRepository : StoryDataSource {
     ): LiveData<ApiResponse<RegisterResponse>> {
         val registerResult: MutableLiveData<ApiResponse<RegisterResponse>> = MutableLiveData()
 
+        registerResult.value = ApiResponse.loading()
         ApiConfig.getService().registerUser(name, email, password)
             .enqueue(object : Callback<RegisterResponse> {
                 override fun onResponse(
@@ -65,7 +73,8 @@ class StoryDataRepository : StoryDataSource {
                         registerResult.value = ApiResponse.error(response.message())
                         Log.d(
                             "RegisterResponse",
-                            "onResponse: ${response.body()}, msg: ${response.message()}, code: ${response.code()}")
+                            "onResponse: ${response.body()}, msg: ${response.message()}, code: ${response.code()}"
+                        )
                     }
                 }
 
@@ -77,36 +86,16 @@ class StoryDataRepository : StoryDataSource {
         return registerResult
     }
 
-    override fun getStories(): LiveData<ApiResponse<StoriesResponse>> {
-        val storiesResult: MutableLiveData<ApiResponse<StoriesResponse>> = MutableLiveData()
-
-        ApiConfig.getService().getStories(SharedPrefUtils.getString(ACCESS_TOKEN)!!)
-            .enqueue(object : Callback<StoriesResponse> {
-                override fun onResponse(
-                    call: Call<StoriesResponse>,
-                    response: Response<StoriesResponse>
-                ) {
-                    if (response.isSuccessful) {
-                        storiesResult.value = ApiResponse.success(response.body()!!)
-                        Log.d(
-                            "StoriesResponse",
-                            "onResponse: ${response.body()}, msg: ${response.message()}, code: ${response.code()}"
-                        )
-                    } else {
-                        storiesResult.value = ApiResponse.error(response.message())
-                        Log.d(
-                            "StoriesResponse",
-                            "msg: ${response.body()?.message}, code: ${response.code()}, error ${response.body()?.error}"
-                        )
-                    }
-                }
-
-                override fun onFailure(call: Call<StoriesResponse>, t: Throwable) {
-                    storiesResult.value = ApiResponse.error(t.message!!)
-                }
-
-            })
-        return storiesResult
+    override fun getStories(): LiveData<PagingData<StoryResult>> {
+        val apiService = ApiConfig.getService()
+        return Pager(
+            config = PagingConfig(
+                pageSize = 5
+            ),
+            pagingSourceFactory = {
+                StoryPagingSource(apiService)
+            }
+        ).liveData
     }
 
     override fun uploadStories(
@@ -115,6 +104,7 @@ class StoryDataRepository : StoryDataSource {
     ): LiveData<ApiResponse<UploadStoriesResponse>> {
         val uploadResult = MutableLiveData<ApiResponse<UploadStoriesResponse>>()
 
+        uploadResult.value = ApiResponse.loading()
         ApiConfig.getService()
             .uploadStories(SharedPrefUtils.getString(ACCESS_TOKEN)!!, file, description)
             .enqueue(object : Callback<UploadStoriesResponse> {
@@ -148,6 +138,7 @@ class StoryDataRepository : StoryDataSource {
     override fun getDetailStories(id: String): LiveData<ApiResponse<DetailStoriesResponse>> {
         val detailResult = MutableLiveData<ApiResponse<DetailStoriesResponse>>()
 
+        detailResult.value = ApiResponse.loading()
         ApiConfig.getService().getDetailStories(
             SharedPrefUtils.getString(ACCESS_TOKEN)!!,
             id
@@ -182,6 +173,7 @@ class StoryDataRepository : StoryDataSource {
     override fun getStoriesWithLocation(): LiveData<ApiResponse<StoriesResponse>> {
         val storiesLocResult: MutableLiveData<ApiResponse<StoriesResponse>> = MutableLiveData()
 
+        storiesLocResult.value = ApiResponse.loading()
         ApiConfig.getService().getStoriesLocation(SharedPrefUtils.getString(ACCESS_TOKEN)!!)
             .enqueue(object : Callback<StoriesResponse> {
                 override fun onResponse(

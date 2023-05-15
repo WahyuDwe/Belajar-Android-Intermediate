@@ -33,9 +33,11 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun getDetailStories() {
-        isLoading(true)
         viewModel.getDetailStories(id).observe(this) { detail ->
             when (detail.status) {
+                StatusResponse.LOADING -> {
+                    isLoading(true)
+                }
                 StatusResponse.SUCCESS -> {
                     isLoading(false)
                     binding.apply {

@@ -1,4 +1,4 @@
-package com.dwi.dicodingstoryapp.ui.home
+package com.dwi.dicodingstoryapp.ui.home.adapter
 
 import android.app.Activity
 import android.content.Intent
@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
@@ -13,10 +14,8 @@ import com.dwi.dicodingstoryapp.data.source.remote.response.StoryResult
 import com.dwi.dicodingstoryapp.databinding.ItemStoryBinding
 import com.dwi.dicodingstoryapp.ui.detail.DetailActivity
 import com.dwi.dicodingstoryapp.utils.Constanta.STORIES_ID
-import com.dwi.dicodingstoryapp.utils.DiffUtils
 
-class MainAdapter : RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
-    private var oldList = emptyList<StoryResult>()
+class MainAdapter : PagingDataAdapter<StoryResult, MainAdapter.MainViewHolder>(DIFF_CALLBACK) {
 
     inner class MainViewHolder(private val binding: ItemStoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -31,12 +30,13 @@ class MainAdapter : RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
             itemView.setOnClickListener {
                 val intent = Intent(itemView.context, DetailActivity::class.java)
                 intent.putExtra(STORIES_ID, stories.id)
-                val optionsCompat: ActivityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                    itemView.context as Activity,
-                    Pair(binding.ivItemStoriesImage, "image"),
-                    Pair(binding.tvName, "name"),
-                    Pair(binding.tvDescription, "description"),
-                )
+                val optionsCompat: ActivityOptionsCompat =
+                    ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        itemView.context as Activity,
+                        Pair(binding.ivItemStoriesImage, "image"),
+                        Pair(binding.tvName, "name"),
+                        Pair(binding.tvDescription, "description"),
+                    )
                 itemView.context.startActivity(intent, optionsCompat.toBundle())
             }
         }
@@ -46,24 +46,28 @@ class MainAdapter : RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
         return MainViewHolder(
             ItemStoryBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
+                LayoutInflater.from(parent.context), parent, false
             )
         )
     }
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
-        val oldPosition = oldList[position]
-        holder.bind(oldPosition)
+        val data = getItem(position)
+        if (data != null) {
+            holder.bind(data)
+        }
     }
 
-    override fun getItemCount(): Int = oldList.size
+    companion object {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<StoryResult>() {
+            override fun areItemsTheSame(oldItem: StoryResult, newItem: StoryResult): Boolean {
+                return oldItem == newItem
+            }
 
-    fun setData(newList: ArrayList<StoryResult>) {
-        val diffUtils = DiffUtils(oldList, newList)
-        val diffResult = DiffUtil.calculateDiff(diffUtils)
-        oldList = newList
-        diffResult.dispatchUpdatesTo(this@MainAdapter)
+            override fun areContentsTheSame(oldItem: StoryResult, newItem: StoryResult): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+        }
     }
 }

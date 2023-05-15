@@ -26,4 +26,6 @@ interface StoryDataSource {
     ): LiveData<ApiResponse<UploadStoriesResponse>>
 
     fun getDetailStories(id: String): LiveData<ApiResponse<DetailStoriesResponse>>
+
+    fun getStoriesWithLocation(): LiveData<ApiResponse<StoriesResponse>>
 }

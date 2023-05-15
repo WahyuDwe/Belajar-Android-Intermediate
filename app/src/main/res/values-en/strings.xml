@@ -28,4 +28,5 @@
     <string name="nama_kosong">Nama tidak boleh kosong</string>
     <string name="email_kosong">Email tidak boleh kosong</string>
     <string name="maps">Maps</string>
+    <string name="title_activity_maps">MapsActivity</string>
 </resources>

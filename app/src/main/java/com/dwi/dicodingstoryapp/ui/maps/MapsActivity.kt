@@ -2,7 +2,10 @@ package com.dwi.dicodingstoryapp.ui.maps
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.viewModels
 import com.dwi.dicodingstoryapp.R
+import com.dwi.dicodingstoryapp.data.source.remote.StatusResponse
 import com.dwi.dicodingstoryapp.databinding.ActivityMapsBinding
 
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -16,34 +19,56 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
+    private val viewModel: MapsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        mMap.uiSettings.apply {
+            isCompassEnabled = true
+            isZoomControlsEnabled = true
+        }
+
+        getStoryLocation()
+    }
+
+    private fun getStoryLocation() {
+        viewModel.getAllStoriesLocation().observe(this@MapsActivity) { loc ->
+            if (loc != null) {
+                when (loc.status) {
+                    StatusResponse.SUCCESS -> {
+                        val lStoriesMap = ArrayList<LatLng>()
+                        val lStoriesMapName = ArrayList<String>()
+                        for (i in loc.body?.story!!.indices) {
+                            lStoriesMap.add(LatLng(loc.body.story[i].lat!!, loc.body.story[i].lon!!))
+                            lStoriesMapName.add(loc.body.story[i].name!!)
+                        }
+
+                        for (i in lStoriesMap.indices) {
+                            mMap.addMarker(
+                                MarkerOptions()
+                                    .position(lStoriesMap[i])
+                                    .title(lStoriesMapName[i])
+                            )
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(lStoriesMap[i], 17f))
+                        }
+                    }
+
+                    StatusResponse.ERROR -> {
+                        Toast.makeText(this@MapsActivity, getString(R.string.gagal_memuat_data), Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
     }
 }

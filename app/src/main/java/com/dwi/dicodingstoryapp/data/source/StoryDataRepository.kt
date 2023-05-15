@@ -178,4 +178,37 @@ class StoryDataRepository : StoryDataSource {
         })
         return detailResult
     }
+
+    override fun getStoriesWithLocation(): LiveData<ApiResponse<StoriesResponse>> {
+        val storiesLocResult: MutableLiveData<ApiResponse<StoriesResponse>> = MutableLiveData()
+
+        ApiConfig.getService().getStoriesLocation(SharedPrefUtils.getString(ACCESS_TOKEN)!!)
+            .enqueue(object : Callback<StoriesResponse> {
+                override fun onResponse(
+                    call: Call<StoriesResponse>,
+                    response: Response<StoriesResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        storiesLocResult.value = ApiResponse.success(response.body()!!)
+                        Log.d(
+                            "StoriesResponse",
+                            "onResponse: ${response.body()}, msg: ${response.message()}, code: ${response.code()}"
+                        )
+                    } else {
+                        storiesLocResult.value = ApiResponse.error(response.message())
+                        Log.d(
+                            "StoriesResponse",
+                            "msg: ${response.body()?.message}, code: ${response.code()}, error ${response.body()?.error}"
+                        )
+                    }
+                }
+
+                override fun onFailure(call: Call<StoriesResponse>, t: Throwable) {
+                    storiesLocResult.value = ApiResponse.error(t.message!!)
+                }
+
+            })
+
+        return storiesLocResult
+    }
 }

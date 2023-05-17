@@ -19,7 +19,7 @@ interface StoryDataSource {
         password: String
     ): LiveData<ApiResponse<RegisterResponse>>
 
-    fun getStories(): LiveData<PagingData<StoryResult>>
+    fun getStories(token: String): LiveData<PagingData<StoryResult>>
 
     fun uploadStories(
         file: MultipartBody.Part,

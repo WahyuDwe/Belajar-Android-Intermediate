@@ -86,14 +86,14 @@ class StoryDataRepository : StoryDataSource {
         return registerResult
     }
 
-    override fun getStories(): LiveData<PagingData<StoryResult>> {
+    override fun getStories(token: String): LiveData<PagingData<StoryResult>> {
         val apiService = ApiConfig.getService()
         return Pager(
             config = PagingConfig(
                 pageSize = 5
             ),
             pagingSourceFactory = {
-                StoryPagingSource(apiService)
+                StoryPagingSource(apiService, token)
             }
         ).liveData
     }

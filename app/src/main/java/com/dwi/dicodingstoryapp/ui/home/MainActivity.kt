@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
                 mainAdapter.retry()
             }
         )
-        mainViewModel.getStories().observe(this@MainActivity) { story ->
+        mainViewModel.getStories(SharedPrefUtils.getString(ACCESS_TOKEN)!!).observe(this@MainActivity) { story ->
             mainAdapter.submitData(lifecycle, story)
         }
     }

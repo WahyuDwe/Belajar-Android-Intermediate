@@ -13,18 +13,5 @@ class BaseApp : Application() {
     companion object {
         @SuppressLint("StaticFieldLeak")
         var context: Context? = null
-
-        @SuppressLint("StaticFieldLeak")
-        private var INSTANCE: BaseApp? = null
-
-        val instance: BaseApp
-            get() {
-                if (INSTANCE == null) {
-                    synchronized(BaseApp::class.java) {
-                        throw RuntimeException("Something wrong !!!")
-                    }
-                }
-                return INSTANCE!!
-            }
     }
 }

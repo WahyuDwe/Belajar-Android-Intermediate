@@ -16,4 +16,6 @@ object DataDummy {
         }
         return storiesList
     }
+
+    fun generateDummyToken(): String = "Bearer token"
 }

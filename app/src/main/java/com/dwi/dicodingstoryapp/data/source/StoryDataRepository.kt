@@ -11,7 +11,6 @@ import androidx.paging.liveData
 import com.dwi.dicodingstoryapp.data.source.remote.ApiResponse
 import com.dwi.dicodingstoryapp.data.source.remote.response.*
 import com.dwi.dicodingstoryapp.network.ApiConfig
-import com.dwi.dicodingstoryapp.network.ApiService
 import com.dwi.dicodingstoryapp.utils.Constanta.ACCESS_TOKEN
 import com.dwi.dicodingstoryapp.utils.SharedPrefUtils
 import okhttp3.MultipartBody

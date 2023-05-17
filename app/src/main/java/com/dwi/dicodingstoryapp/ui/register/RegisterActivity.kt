@@ -21,7 +21,9 @@ class RegisterActivity : AppCompatActivity() {
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // change title action bar
+        /**
+         * change title action bar
+         * */
         supportActionBar?.title = getString(R.string.dicoding_story)
 
         binding.btnRegister.setOnClickListener {

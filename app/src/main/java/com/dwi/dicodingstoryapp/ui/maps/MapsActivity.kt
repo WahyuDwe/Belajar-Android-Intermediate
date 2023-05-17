@@ -1,19 +1,21 @@
 package com.dwi.dicodingstoryapp.ui.maps
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.res.Resources
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import com.dwi.dicodingstoryapp.R
 import com.dwi.dicodingstoryapp.data.source.remote.StatusResponse
 import com.dwi.dicodingstoryapp.databinding.ActivityMapsBinding
-
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -41,6 +43,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         getStoryLocation()
+        customMapStyle()
     }
 
     private fun getStoryLocation() {
@@ -83,6 +86,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             binding.progressBar.visibility = View.VISIBLE
         } else {
             binding.progressBar.visibility = View.GONE
+        }
+    }
+
+    private fun customMapStyle() {
+        try {
+            val success =
+                mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))
+            if (!success) {
+                Log.e("MapsActivity", "Style parsing failed.")
+            }
+        } catch (exception: Resources.NotFoundException) {
+            Log.e("MapsActivity", "Can't find style. Error: ", exception)
         }
     }
 }

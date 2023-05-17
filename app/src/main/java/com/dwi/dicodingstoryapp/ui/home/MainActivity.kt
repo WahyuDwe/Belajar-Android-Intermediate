@@ -6,7 +6,6 @@ import android.provider.Settings
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -84,14 +83,6 @@ class MainActivity : AppCompatActivity() {
         )
         mainViewModel.getStories(SharedPrefUtils.getString(ACCESS_TOKEN)!!).observe(this@MainActivity) { story ->
             mainAdapter.submitData(lifecycle, story)
-        }
-    }
-
-    private fun isLoading(isLoading: Boolean) {
-        if (isLoading) {
-            binding.progressBar.visibility = View.VISIBLE
-        } else {
-            binding.progressBar.visibility = View.GONE
         }
     }
 

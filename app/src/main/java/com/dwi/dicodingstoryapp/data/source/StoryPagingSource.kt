@@ -4,8 +4,6 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.dwi.dicodingstoryapp.data.source.remote.response.StoryResult
 import com.dwi.dicodingstoryapp.network.ApiService
-import com.dwi.dicodingstoryapp.utils.Constanta
-import com.dwi.dicodingstoryapp.utils.SharedPrefUtils
 
 class StoryPagingSource(private val apiService: ApiService, val token: String) : PagingSource<Int, StoryResult>() {
 

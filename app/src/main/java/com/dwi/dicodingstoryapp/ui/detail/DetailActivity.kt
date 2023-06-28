@@ -11,10 +11,13 @@ import com.dwi.dicodingstoryapp.R
 import com.dwi.dicodingstoryapp.data.source.remote.StatusResponse
 import com.dwi.dicodingstoryapp.databinding.ActivityDetailBinding
 import com.dwi.dicodingstoryapp.utils.Constanta.STORIES_ID
+import com.dwi.dicodingstoryapp.utils.ViewModelFactory
 
 class DetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailBinding
-    private val viewModel: DetailViewModel by viewModels()
+    private val viewModel: DetailViewModel by viewModels {
+        ViewModelFactory(this)
+    }
     private lateinit var id: String
 
     override fun onCreate(savedInstanceState: Bundle?) {

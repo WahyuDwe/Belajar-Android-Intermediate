@@ -10,7 +10,7 @@ import androidx.paging.PagingData
 import androidx.paging.liveData
 import com.dwi.dicodingstoryapp.data.source.remote.ApiResponse
 import com.dwi.dicodingstoryapp.data.source.remote.response.*
-import com.dwi.dicodingstoryapp.network.ApiConfig
+import com.dwi.dicodingstoryapp.network.ApiService
 import com.dwi.dicodingstoryapp.utils.Constanta.ACCESS_TOKEN
 import com.dwi.dicodingstoryapp.utils.SharedPrefUtils
 import okhttp3.MultipartBody
@@ -19,9 +19,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class StoryDataRepository : StoryDataSource {
+class StoryDataRepository(private val apiService: ApiService) : StoryDataSource {
     override suspend fun authRequest(email: String, password: String): Response<LoginResponse> {
-        return ApiConfig.getService().loginUser(email, password)
+        return apiService.loginUser(email, password)
     }
 
     override suspend fun auth(
@@ -55,7 +55,7 @@ class StoryDataRepository : StoryDataSource {
         val registerResult: MutableLiveData<ApiResponse<RegisterResponse>> = MutableLiveData()
 
         registerResult.value = ApiResponse.loading()
-        ApiConfig.getService().registerUser(name, email, password)
+        apiService.registerUser(name, email, password)
             .enqueue(object : Callback<RegisterResponse> {
                 override fun onResponse(
                     call: Call<RegisterResponse>,
@@ -86,7 +86,6 @@ class StoryDataRepository : StoryDataSource {
     }
 
     override fun getStories(token: String): LiveData<PagingData<StoryResult>> {
-        val apiService = ApiConfig.getService()
         return Pager(
             config = PagingConfig(
                 pageSize = 5
@@ -104,7 +103,7 @@ class StoryDataRepository : StoryDataSource {
         val uploadResult = MutableLiveData<ApiResponse<UploadStoriesResponse>>()
 
         uploadResult.value = ApiResponse.loading()
-        ApiConfig.getService()
+        apiService
             .uploadStories(SharedPrefUtils.getString(ACCESS_TOKEN)!!, file, description)
             .enqueue(object : Callback<UploadStoriesResponse> {
                 override fun onResponse(
@@ -138,7 +137,7 @@ class StoryDataRepository : StoryDataSource {
         val detailResult = MutableLiveData<ApiResponse<DetailStoriesResponse>>()
 
         detailResult.value = ApiResponse.loading()
-        ApiConfig.getService().getDetailStories(
+        apiService.getDetailStories(
             SharedPrefUtils.getString(ACCESS_TOKEN)!!,
             id
         ).enqueue(object : Callback<DetailStoriesResponse> {
@@ -173,7 +172,7 @@ class StoryDataRepository : StoryDataSource {
         val storiesLocResult: MutableLiveData<ApiResponse<StoriesResponse>> = MutableLiveData()
 
         storiesLocResult.value = ApiResponse.loading()
-        ApiConfig.getService().getStoriesLocation(SharedPrefUtils.getString(ACCESS_TOKEN)!!)
+        apiService.getStoriesLocation(SharedPrefUtils.getString(ACCESS_TOKEN)!!)
             .enqueue(object : Callback<StoriesResponse> {
                 override fun onResponse(
                     call: Call<StoriesResponse>,

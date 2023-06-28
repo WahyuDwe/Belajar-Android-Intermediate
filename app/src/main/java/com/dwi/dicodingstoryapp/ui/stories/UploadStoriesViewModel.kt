@@ -5,9 +5,8 @@ import com.dwi.dicodingstoryapp.data.source.StoryDataRepository
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 
-class UploadStoriesViewModel : ViewModel() {
-    private val mStoryDataRepository = StoryDataRepository()
+class UploadStoriesViewModel(private val storyDataRepository: StoryDataRepository) : ViewModel() {
 
     fun uploadStories(file: MultipartBody.Part, description: RequestBody) =
-        mStoryDataRepository.uploadStories(file, description)
+        storyDataRepository.uploadStories(file, description)
 }

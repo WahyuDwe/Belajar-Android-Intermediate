@@ -8,8 +8,7 @@ import androidx.paging.cachedIn
 import com.dwi.dicodingstoryapp.data.source.StoryDataRepository
 import com.dwi.dicodingstoryapp.data.source.remote.response.StoryResult
 
-class MainViewModel: ViewModel() {
-    private val mStoryDataRepository = StoryDataRepository()
-
-    fun getStories(token: String): LiveData<PagingData<StoryResult>> = mStoryDataRepository.getStories(token).cachedIn(viewModelScope)
+class MainViewModel(private val storyDataRepository: StoryDataRepository) : ViewModel() {
+    fun getStories(token: String): LiveData<PagingData<StoryResult>> =
+        storyDataRepository.getStories(token).cachedIn(viewModelScope)
 }

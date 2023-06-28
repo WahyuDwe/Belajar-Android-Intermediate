@@ -5,7 +5,7 @@ import androidx.paging.PagingState
 import com.dwi.dicodingstoryapp.data.source.remote.response.StoryResult
 import com.dwi.dicodingstoryapp.network.ApiService
 
-class StoryPagingSource(private val apiService: ApiService, val token: String) : PagingSource<Int, StoryResult>() {
+class StoryPagingSource(private val apiService: ApiService, private val token: String) : PagingSource<Int, StoryResult>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, StoryResult> {
         return try {

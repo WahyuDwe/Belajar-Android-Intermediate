@@ -11,8 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class LoginViewModel : ViewModel() {
-    private val mStoryDataRepository = StoryDataRepository()
+class LoginViewModel(private val storyDataRepository: StoryDataRepository) : ViewModel() {
 
     fun auth(
         email: String,
@@ -21,7 +20,7 @@ class LoginViewModel : ViewModel() {
         val authResult = MutableLiveData<ApiResponse<LoginResponse>>()
         viewModelScope.launch {
             withContext(Dispatchers.Main) {
-                authResult.postValue(mStoryDataRepository.auth(email, password).value)
+                authResult.postValue(storyDataRepository.auth(email, password).value)
             }
         }
         return authResult

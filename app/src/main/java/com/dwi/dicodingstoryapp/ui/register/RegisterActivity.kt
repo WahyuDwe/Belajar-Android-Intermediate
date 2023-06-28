@@ -11,10 +11,13 @@ import com.dwi.dicodingstoryapp.R
 import com.dwi.dicodingstoryapp.data.source.remote.StatusResponse
 import com.dwi.dicodingstoryapp.databinding.ActivityRegisterBinding
 import com.dwi.dicodingstoryapp.ui.login.LoginActivity
+import com.dwi.dicodingstoryapp.utils.ViewModelFactory
 
 class RegisterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding
-    private val viewModel: RegisterViewModel by viewModels()
+    private val viewModel: RegisterViewModel by viewModels {
+        ViewModelFactory(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

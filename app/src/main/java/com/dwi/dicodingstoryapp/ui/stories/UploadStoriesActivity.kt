@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.dwi.dicodingstoryapp.R
 import com.dwi.dicodingstoryapp.databinding.ActivityUploadStoryBinding
+import com.dwi.dicodingstoryapp.utils.ViewModelFactory
 import com.dwi.dicodingstoryapp.utils.reduceFileImage
 import com.dwi.dicodingstoryapp.utils.uriToFile
 import okhttp3.MediaType.Companion.toMediaType
@@ -29,7 +30,9 @@ class UploadStoriesActivity : AppCompatActivity() {
     private lateinit var binding: ActivityUploadStoryBinding
     private lateinit var currentPhotoPath: String
     private var getFile: File? = null
-    private val viewModel: UploadStoriesViewModel by viewModels()
+    private val viewModel: UploadStoriesViewModel by viewModels {
+        ViewModelFactory(this)
+    }
 
     private val launchIntentCamera = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -58,17 +61,13 @@ class UploadStoriesActivity : AppCompatActivity() {
     }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
+        requestCode: Int, permissions: Array<out String>, grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_PERMISSION) {
             if (!allPermissionGranted()) {
                 Toast.makeText(
-                    this@UploadStoriesActivity,
-                    "Tidak Mendapatkan permission",
-                    Toast.LENGTH_SHORT
+                    this@UploadStoriesActivity, "Tidak Mendapatkan permission", Toast.LENGTH_SHORT
                 ).show()
                 finish()
             }
@@ -82,9 +81,7 @@ class UploadStoriesActivity : AppCompatActivity() {
 
         if (!allPermissionGranted()) {
             ActivityCompat.requestPermissions(
-                this@UploadStoriesActivity,
-                REQUIRED_PERMISSIONS,
-                REQUEST_CODE_PERMISSION
+                this@UploadStoriesActivity, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSION
             )
         }
 
@@ -103,9 +100,7 @@ class UploadStoriesActivity : AppCompatActivity() {
 
         com.dwi.dicodingstoryapp.utils.createTempFile(application).also {
             val photoURI: Uri = FileProvider.getUriForFile(
-                this@UploadStoriesActivity,
-                "com.dwi.dicodingstoryapp.fileprovider",
-                it
+                this@UploadStoriesActivity, "com.dwi.dicodingstoryapp.fileprovider", it
             )
             currentPhotoPath = it.absolutePath
             intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
@@ -129,9 +124,7 @@ class UploadStoriesActivity : AppCompatActivity() {
                 binding.etDescription.text.toString().toRequestBody("text/plain".toMediaType())
             val requestImageFile = file.asRequestBody("image/jpeg".toMediaType())
             val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
-                "photo",
-                file.name,
-                requestImageFile
+                "photo", file.name, requestImageFile
             )
             isLoading(true)
             viewModel.uploadStories(imageMultipart, desc).observe(this) {

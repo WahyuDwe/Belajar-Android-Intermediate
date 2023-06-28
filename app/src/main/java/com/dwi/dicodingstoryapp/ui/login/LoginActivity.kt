@@ -11,10 +11,13 @@ import com.dwi.dicodingstoryapp.data.source.remote.StatusResponse
 import com.dwi.dicodingstoryapp.databinding.ActivityLoginBinding
 import com.dwi.dicodingstoryapp.ui.home.MainActivity
 import com.dwi.dicodingstoryapp.ui.register.RegisterActivity
+import com.dwi.dicodingstoryapp.utils.ViewModelFactory
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
-    private val viewModel: LoginViewModel by viewModels()
+    private val viewModel: LoginViewModel by viewModels {
+        ViewModelFactory(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,9 +43,7 @@ class LoginActivity : AppCompatActivity() {
                             StatusResponse.SUCCESS -> {
                                 isLoading(false)
                                 Toast.makeText(
-                                    this,
-                                    getString(R.string.login_berhasil),
-                                    Toast.LENGTH_SHORT
+                                    this, getString(R.string.login_berhasil), Toast.LENGTH_SHORT
                                 ).show()
                                 startActivity(Intent(this, MainActivity::class.java))
                                 finish()
@@ -50,9 +51,7 @@ class LoginActivity : AppCompatActivity() {
                             StatusResponse.ERROR -> {
                                 isLoading(false)
                                 Toast.makeText(
-                                    this,
-                                    getString(R.string.login_gagal),
-                                    Toast.LENGTH_SHORT
+                                    this, getString(R.string.login_gagal), Toast.LENGTH_SHORT
                                 ).show()
                             }
                         }
@@ -79,9 +78,7 @@ class LoginActivity : AppCompatActivity() {
             }
             binding.etPassword.text?.length!! < 8 -> {
                 Toast.makeText(
-                    this,
-                    getString(R.string.password_error),
-                    Toast.LENGTH_SHORT
+                    this, getString(R.string.password_error), Toast.LENGTH_SHORT
                 ).show()
                 isValid = false
             }

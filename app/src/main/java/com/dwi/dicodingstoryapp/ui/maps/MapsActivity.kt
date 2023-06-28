@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.dwi.dicodingstoryapp.R
 import com.dwi.dicodingstoryapp.data.source.remote.StatusResponse
 import com.dwi.dicodingstoryapp.databinding.ActivityMapsBinding
+import com.dwi.dicodingstoryapp.utils.ViewModelFactory
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -22,7 +23,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
-    private val viewModel: MapsViewModel by viewModels()
+    private val viewModel: MapsViewModel by viewModels {
+        ViewModelFactory(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +61,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                         val lStoriesMap = ArrayList<LatLng>()
                         val lStoriesMapName = ArrayList<String>()
                         for (i in loc.body?.story!!.indices) {
-                            lStoriesMap.add(LatLng(loc.body.story[i].lat!!, loc.body.story[i].lon!!))
+                            lStoriesMap.add(
+                                LatLng(
+                                    loc.body.story[i].lat!!,
+                                    loc.body.story[i].lon!!
+                                )
+                            )
                             lStoriesMapName.add(loc.body.story[i].name!!)
                         }
 
@@ -68,13 +76,22 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                                     .position(lStoriesMap[i])
                                     .title(lStoriesMapName[i])
                             )
-                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(lStoriesMap[i], 17f))
+                            mMap.animateCamera(
+                                CameraUpdateFactory.newLatLngZoom(
+                                    lStoriesMap[i],
+                                    17f
+                                )
+                            )
                         }
                     }
 
                     StatusResponse.ERROR -> {
                         isLoading(false)
-                        Toast.makeText(this@MapsActivity, getString(R.string.gagal_memuat_data), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@MapsActivity,
+                            getString(R.string.gagal_memuat_data),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }

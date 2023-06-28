@@ -18,10 +18,13 @@ import com.dwi.dicodingstoryapp.ui.maps.MapsActivity
 import com.dwi.dicodingstoryapp.ui.stories.UploadStoriesActivity
 import com.dwi.dicodingstoryapp.utils.Constanta.ACCESS_TOKEN
 import com.dwi.dicodingstoryapp.utils.SharedPrefUtils
+import com.dwi.dicodingstoryapp.utils.ViewModelFactory
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private val mainViewModel: MainViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels {
+        ViewModelFactory(this)
+    }
     private lateinit var mainAdapter: MainAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,9 +84,10 @@ class MainActivity : AppCompatActivity() {
                 mainAdapter.retry()
             }
         )
-        mainViewModel.getStories(SharedPrefUtils.getString(ACCESS_TOKEN)!!).observe(this@MainActivity) { story ->
-            mainAdapter.submitData(lifecycle, story)
-        }
+        mainViewModel.getStories(SharedPrefUtils.getString(ACCESS_TOKEN)!!)
+            .observe(this@MainActivity) { story ->
+                mainAdapter.submitData(lifecycle, story)
+            }
     }
 
 }
